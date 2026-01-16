@@ -4,31 +4,9 @@
 
 经颅刺激（Transcranial Stimulation）是一类非侵入性的脑调控技术，通过在头皮施加物理刺激（如磁场、电流）来调节大脑神经活动，为神经科学研究和神经系统疾病的治疗提供了重要工具。随着计算神经科学和生物医学工程的发展，计算仿真在经颅刺激的机制研究、方案优化和个性化治疗中发挥着越来越重要的作用。正向仿真（Forward Simulation）用于预测刺激作用下脑内电场的分布，而逆向仿真（Inverse Simulation）则根据目标脑区的需求反推最优的刺激参数。
 
-本文主要介绍经颅磁刺激（Transcranial Magnetic Stimulation, TMS）、经颅直流电刺激（Transcranial Direct Current Stimulation, tDCS）和时域干涉刺激（Temporal Interference Stimulation, TI）的基本原理，并阐述基于SimNIBS（Simulation of Non‑invasive Brain Stimulation）的正向与逆向仿真方法。
+本文主要介绍时域干涉刺激（Temporal Interference Stimulation, TI）的基本原理，并阐述基于SimNIBS（Simulation of Non‑invasive Brain Stimulation）的正向与逆向仿真方法。
 
-## 2. 经颅刺激技术概述
-
-### 2.1 经颅磁刺激（TMS）
-
-TMS利用快速变化的磁场在脑内感生出感应电流，从而激活或抑制特定脑区的神经元活动。其特点包括：
-
-- **非侵入性**：无需手术，通过头皮外的线圈即可实现刺激；
-- **时空分辨率较高**：可根据线圈形状和定位实现相对聚焦的刺激；
-- **临床应用广泛**：已获FDA批准用于治疗重度抑郁症、慢性疼痛和强迫症等疾病。
-
-TMS的物理基础是法拉第电磁感应定律，即变化的磁场在导电介质（如脑组织）中产生电场。常用的线圈类型包括圆形线圈、八字形线圈（butterfly coil）和深部刺激线圈（H‑coil）等，不同线圈的穿透深度和聚焦特性有所差异。
-
-### 2.2 经颅直流电刺激（tDCS）
-
-tDCS通过在头皮放置两个电极（阳极和阴极），施加恒定的低强度直流电流（通常为1‑2 mA），从而调节皮层神经元的兴奋性。其机制主要涉及：
-
-- **阳极刺激**：提高神经元膜电位，增加自发放电概率；
-- **阴极刺激**：降低神经元膜电位，抑制神经活动；
-- **刺激后效应**：持续数十分钟至数小时，可能与突触可塑性相关。
-
-tDCS设备简单、成本较低，已用于抑郁症、卒中后康复和认知增强等研究。然而，其空间分辨率较低，电流在脑内的分布受头皮、颅骨和脑脊液等组织导电特性的影响较大。
-
-### 2.3 时域干涉刺激（TI）
+### 2 时域干涉刺激（TI）
 
 时域干涉刺激（Temporal Interference Stimulation, TI）是近年来提出的一种新型非侵入性深部脑刺激技术。其原理是使用两对（或多对）电极，分别施加频率略有差异的高频交流电流（例如2000 Hz与2010 Hz）。这两束电流在深部脑区相干叠加，产生一个低频包络（即差频，如10 Hz），该包络能够选择性地激活深部神经元，而表层组织仅受到高频刺激，从而避免了对表层的强烈激活。
 
@@ -42,7 +20,7 @@ TI的优势在于：
 
 ### 3.1 正向仿真的目的
 
-正向仿真旨在根据给定的刺激参数（如线圈位置、电流强度、电极配置等）和个体头部几何结构（从MRI图像分割得到），计算脑内各组织的电场分布。这是理解刺激作用机制、评估刺激效果和安全性、以及后续进行参数优化的基础。
+正向仿真旨在根据给定的刺激参数（如电流强度、电极配置等）和个体头部几何结构（从MRI图像分割得到），计算脑内各组织的电场分布。这是理解刺激作用机制、评估刺激效果和安全性、以及后续进行参数优化的基础。
 
 ### 3.2 仿真流程
 
@@ -53,8 +31,7 @@ TI的优势在于：
    - 生成三维有限元网格，并为不同组织分配相应的电导率参数。
 
 2. **刺激源建模**：
-   - 对于TMS，需要建立线圈的几何模型和电流波形；
-   - 对于tDCS/TI，需定义电极的形状、位置和注入电流。
+   - TI，定义电极的形状、位置和注入电流。
 
 3. **电场计算**：
    - 基于准静态麦克斯韦方程组，采用有限元法（FEM）或边界元法（BEM）求解脑内电位和电场分布；
@@ -89,8 +66,6 @@ min_p L(E(p), E_target)  约束条件：p ∈ P_safe
 
 其中 **p** 是刺激参数向量，**E(p)** 是正向仿真得到的电场分布，**E_target** 是目标电场（例如在目标区内为1 V/m，其他区域为0），**L** 是损失函数（如均方误差），**P_safe** 表示安全与可行性约束（如电流上限、电极不可重叠等）。
 
-*注：为了兼容不同的Markdown解析器，此处使用简单的文本格式表示数学公式。原LaTeX公式格式为：$\min_{\mathbf{p}} L(E(\mathbf{p}), E_{\text{target}}) \quad \text{s.t.} \quad \mathbf{p} \in \mathcal{P}_{\text{safe}}$*
-
 常用的优化算法包括：
 
 - **梯度下降法**：若正向模型可微，可利用梯度信息高效搜索；
@@ -101,30 +76,8 @@ min_p L(E(p), E_target)  约束条件：p ∈ P_safe
 
 SimNIBS 4.5版本引入了多种先进的逆向仿真工具：
 
-- **TMS线圈位置优化**：针对弯曲和柔性线圈，自动寻找避免与头部碰撞的最优位姿；
 - **TES蒙太奇优化**：支持矩形电极、中心‑环绕电极阵列以及时域干涉刺激的优化；
 - **无导联场优化**（Leadfield‑free optimization）：无需预先计算完整的导联场矩阵，可直接在参数空间进行搜索，大大降低了计算量；
 - **肿瘤治疗电场**（Tumor Treating Fields, TTFields）的电极阵列优化。
 
 这些优化方法均基于个体化的头部模型，能够为临床研究和治疗提供个性化的刺激方案。
-
-## 5. 总结与展望
-
-经颅刺激技术的计算仿真（尤其是基于SimNIBS的正向与逆向仿真）已成为连接基础研究与临床应用的桥梁。通过正向仿真，我们能够更准确地预测刺激在脑内的电场分布，理解刺激的生理效应；通过逆向仿真，我们可以为个体患者量身定制最优的刺激参数，提高治疗的有效性和安全性。
-
-未来的研究方向包括：
-
-1. **多物理场耦合**：结合电刺激与神经动力学模型，预测刺激对神经网络活动的影响；
-2. **实时闭环刺激**：将仿真模型与实时脑电（EEG）或功能磁共振（fMRI）数据结合，实现自适应调控；
-3. **跨尺度建模**：从微观神经元到宏观脑区，建立多尺度仿真框架，更全面地揭示刺激机制；
-4. **开源与标准化**：推动仿真工具的开源共享和数据格式标准化，促进学术合作与临床转化。
-
-SimNIBS作为目前最完善的经颅刺激仿真平台之一，将继续在方法创新、工具集成和社区建设中发挥核心作用，推动非侵入性脑刺激技术的发展。
-
-## 参考文献
-
-1. Thielscher, A., Antunes, A., & Saturnino, G. B. (2015). Field modeling for transcranial magnetic stimulation: a useful tool to understand the physiological effects of TMS? *IEEE EMBS*.
-2. Saturnino, G. B., Puonti, O., Nielsen, J. D., Antonenko, D., Madsen, K. H., & Thielscher, A. (2019). SimNIBS 2.1: a comprehensive pipeline for individualized electric field modelling for transcranial brain stimulation. *Brain and Human Body Modeling*.
-3. Grossman, N., Bono, D., Dedic, N., et al. (2017). Noninvasive deep brain stimulation via temporally interfering electric fields. *Cell*, 169(6), 1029‑1041.
-4. Nitsche, M. A., & Paulus, W. (2000). Excitability changes induced in the human motor cortex by weak transcranial direct current stimulation. *The Journal of Physiology*, 527(3), 633‑639.
-5. SimNIBS官方文档：https://simnibs.github.io/simnibs/build/html/index.html
